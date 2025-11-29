@@ -372,6 +372,62 @@
             transform: translateX(-5px);
         }
 
+        /* Audio Control Button */
+        .audio-control {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 1001;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .audio-control:hover {
+            background: rgba(29, 185, 84, 0.2);
+            border-color: rgba(29, 185, 84, 0.5);
+            transform: scale(1.1);
+        }
+
+        .audio-control.muted {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .audio-wave {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(29, 185, 84, 0.5);
+            animation: audioRipple 2s ease-out infinite;
+            opacity: 0;
+        }
+
+        .audio-control.playing .audio-wave {
+            opacity: 1;
+        }
+
+        @keyframes audioRipple {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
         /* Footer */
         footer {
             padding: 60px;
@@ -501,6 +557,17 @@
             <div class="bar"></div>
         </div>
         <div class="loading-subtext">Loading your experience</div>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="Beethoven-symphony-no-5.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Audio Control Button -->
+    <div class="audio-control playing" id="audioControl" onclick="toggleAudio()">
+        <span id="audioIcon">🔊</span>
+        <div class="audio-wave"></div>
     </div>
 
     <!-- Navigation -->
@@ -717,6 +784,41 @@
                 ]
             }
         };
+
+        // Background Music Control
+        const bgMusic = document.getElementById('bgMusic');
+        const audioControl = document.getElementById('audioControl');
+        const audioIcon = document.getElementById('audioIcon');
+        let isPlaying = false;
+
+        // Try to autoplay after loading screen
+        setTimeout(() => {
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                audioControl.classList.add('playing');
+            }).catch(err => {
+                // Browser blocked autoplay, user needs to click
+                isPlaying = false;
+                audioControl.classList.remove('playing');
+                audioIcon.textContent = '🔇';
+            });
+        }, 3000);
+
+        function toggleAudio() {
+            if (isPlaying) {
+                bgMusic.pause();
+                audioIcon.textContent = '🔇';
+                audioControl.classList.remove('playing');
+                audioControl.classList.add('muted');
+                isPlaying = false;
+            } else {
+                bgMusic.play();
+                audioIcon.textContent = '🔊';
+                audioControl.classList.add('playing');
+                audioControl.classList.remove('muted');
+                isPlaying = true;
+            }
+        }
 
         function scrollToSection(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
