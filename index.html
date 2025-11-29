@@ -417,10 +417,11 @@
             inset: 0;
             background: #0a0a0a;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            animation: fadeOut 0.8s ease-out 1.5s forwards;
+            animation: fadeOut 0.8s ease-out 3s forwards;
         }
 
         @keyframes fadeOut {
@@ -428,9 +429,60 @@
         }
 
         .loading-text {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            animation: pulse 1.5s ease-in-out infinite;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .music-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 80px;
+        }
+
+        .bar {
+            width: 6px;
+            background: linear-gradient(180deg, #1DB954, #1ed760);
+            border-radius: 3px;
+            animation: musicPulse 1.2s ease-in-out infinite;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0s; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        .bar:nth-child(6) { animation-delay: 0.3s; }
+        .bar:nth-child(7) { animation-delay: 0.2s; }
+        .bar:nth-child(8) { animation-delay: 0.1s; }
+
+        @keyframes musicPulse {
+            0%, 100% { height: 20px; }
+            50% { height: 80px; }
+        }
+
+        .loading-subtext {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
         }
     </style>
 </head>
@@ -438,6 +490,17 @@
     <!-- Loading Screen -->
     <div class="loading">
         <div class="loading-text">MOODTUNE</div>
+        <div class="music-bars">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="loading-subtext">Loading your experience</div>
     </div>
 
     <!-- Navigation -->
@@ -556,7 +619,7 @@
 
         <!-- Footer -->
         <footer>
-            <p>MOODTUNE © 2024 - Powered by Pathan Tehzeeb Khan</p>
+            <p>MOODTUNE © 2024 - Powered by Spotify</p>
             <p style="margin-top: 10px;">Crafted with precision for music lovers</p>
         </footer>
     </div>
@@ -710,5 +773,4 @@
         });
     </script>
 </body>
-
 </html>
