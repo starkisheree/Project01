@@ -791,17 +791,39 @@
         const audioIcon = document.getElementById('audioIcon');
         let isPlaying = false;
 
-        // Try to autoplay after loading screen
+        // Set volume to a comfortable level
+        bgMusic.volume = 0.3;
+
+        // Auto-play music after loading screen (3 seconds)
         setTimeout(() => {
-            bgMusic.play().then(() => {
-                isPlaying = true;
-                audioControl.classList.add('playing');
-            }).catch(err => {
-                // Browser blocked autoplay, user needs to click
-                isPlaying = false;
-                audioControl.classList.remove('playing');
-                audioIcon.textContent = '🔇';
-            });
+            // Attempt to play
+            const playPromise = bgMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Autoplay successful
+                    isPlaying = true;
+                    audioControl.classList.add('playing');
+                    audioIcon.textContent = '🔊';
+                }).catch(err => {
+                    // Autoplay was blocked by browser
+                    // Show a subtle notification or just leave button in muted state
+                    isPlaying = false;
+                    audioControl.classList.remove('playing');
+                    audioControl.classList.add('muted');
+                    audioIcon.textContent = '🔇';
+                    
+                    // Try to play on first user interaction
+                    document.body.addEventListener('click', function playOnInteraction() {
+                        bgMusic.play();
+                        isPlaying = true;
+                        audioControl.classList.add('playing');
+                        audioControl.classList.remove('muted');
+                        audioIcon.textContent = '🔊';
+                        document.body.removeEventListener('click', playOnInteraction);
+                    }, { once: true });
+                });
+            }
         }, 3000);
 
         function toggleAudio() {
